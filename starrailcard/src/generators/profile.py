@@ -1,7 +1,7 @@
 # Copyright 2023 DEViantUa <t.me/deviant_ua>
 # All rights reserved.
 import asyncio, time
-from PIL import ImageDraw,Image
+from PIL import ImageDraw, Image
 from ..tools import calculators, pill, openFile
 from collections import defaultdict
 
@@ -29,6 +29,7 @@ async def open_frame_charter(x):
     else:
         return _of.frame_stars_charters_4
 
+
 async def open_element_panel(name):
     if name == "Wind":
         return _of.element_wind.copy()
@@ -45,7 +46,8 @@ async def open_element_panel(name):
     else:
         return _of.element_psyhical.copy()
 
-async def get_stars(x, v = False):
+
+async def get_stars(x, v=False):
     if v:
         pass
     else:
@@ -61,7 +63,7 @@ async def max_lvl(x):
     elif x == 1:
         max = 30
     elif x == 2:
-        max = 40 
+        max = 40
     elif x == 3:
         max = 50
     elif x == 4:
@@ -70,8 +72,9 @@ async def max_lvl(x):
         max = 70
     else:
         max = 80
-    
+
     return max
+
 
 async def get_stars_icon(x):
     if x == 1:
@@ -85,78 +88,82 @@ async def get_stars_icon(x):
     elif x == 5:
         return _of.strs_5
 
+
 class Creat:
 
-    def __init__(self,data,lang,img,hide) -> None:
+    def __init__(self, data, lang, img, hide) -> None:
         self.user = data.player
         self.characters = data.characters
         self.lang = lang
         self.img = img
         self.hide = hide
 
-
     async def creat_banner(self):
         if self.img:
-            bg = await pill.get_centr_honkai_art((694,314),self.img)
-            bg.alpha_composite(_of.bg_shadow,(0,262))
-            return bg 
+            bg = await pill.get_centr_honkai_art((694, 314), self.img)
+            bg.alpha_composite(_of.bg_shadow, (0, 262))
+            return bg
         else:
             return _of.default_bg.copy()
-        
+
     async def creat_name_banner(self):
         bg = _of.name_frame.copy()
         d = ImageDraw.Draw(bg)
         font = await pill.get_font(16)
-        
-        x = 74 - int(font.getlength(self.user.nickname)/2)
+
+        x = 74 - int(font.getlength(self.user.nickname) / 2)
         d.text((x, -3), self.user.nickname, font=font, fill=(255, 255, 255, 255))
 
         if self.hide:
-            d.text((19,21), "UID: HIDDEN", font=font, fill=(255, 255, 255, 255))
+            d.text((19, 21), "UID: HIDDEN", font=font, fill=(255, 255, 255, 255))
         else:
             d.text((19, 21), f"UID: {self.user.uid}", font=font, fill=(255, 255, 255, 255))
 
-        x = 69 - int(font.getlength(f"{self.lang.lvl}: {self.user.level}")/2)
-        d.text((x, 44), f"{self.lang.lvl}: {self.user.level}", font=font, fill=(255, 255, 255, 255)) #-4
+        x = 69 - int(font.getlength(f"{self.lang.lvl}: {self.user.level}") / 2)
+        d.text(
+            (x, 44), f"{self.lang.lvl}: {self.user.level}", font=font, fill=(255, 255, 255, 255)
+        )  # -4
 
-        d.text((134, 44), f"{self.lang.WL}:{self.user.world_level}", font=font, fill=(219, 194, 145, 255))
-        
+        d.text(
+            (134, 44),
+            f"{self.lang.WL}:{self.user.world_level}",
+            font=font,
+            fill=(219, 194, 145, 255),
+        )
+
         return bg
 
     async def creat_bg_banner(self):
         frame_bg = await pill.apply_blur_and_overlay(self.img)
         dark_shadow = Image.new("RGBA", (681, 459), (0, 0, 0, 190))
-        frame_bg.alpha_composite(dark_shadow, (0,0))
+        frame_bg.alpha_composite(dark_shadow, (0, 0))
 
         return frame_bg
 
-
-    async def creat_lc(self,data):
+    async def creat_lc(self, data):
         bg = Image.new("RGBA", (149, 60), (0, 0, 0, 0))
         if data is None:
             return bg
-        icon = await pill.get_dowload_img(data.icon, size= (60,60))
-        bg.alpha_composite(icon,(0,0))
+        icon = await pill.get_dowload_img(data.icon, size=(60, 60))
+        bg.alpha_composite(icon, (0, 0))
 
         d = ImageDraw.Draw(bg)
 
         max_level = await max_lvl(data.promotion)
         level = f"{self.lang.lvl}: {data.level}/{max_level}"
-        sets_name_font,size = await pill.get_text_size_frame(level,12,88)
+        sets_name_font, size = await pill.get_text_size_frame(level, 12, 88)
         d.text((59, 10), level, font=sets_name_font, fill=(219, 194, 145, 255))
         ups_info = await ups(data.rank)
         font = await pill.get_font(17)
         up = _of.ups.copy()
         d = ImageDraw.Draw(up)
-        d.text((4,-3), ups_info, font=font, fill=(219, 194, 145, 255))
-        bg.alpha_composite(up.resize((17,17)),(60,30))
+        d.text((4, -3), ups_info, font=font, fill=(219, 194, 145, 255))
+        bg.alpha_composite(up.resize((17, 17)), (60, 30))
 
         stars = await get_stars_icon(data.rarity)
-        bg.alpha_composite(stars.resize((65,18)),(80,29))
-
+        bg.alpha_composite(stars.resize((65, 18)), (80, 29))
 
         return bg
-
 
     async def creat_charters(self, character):
         name = character.name
@@ -169,8 +176,18 @@ class Creat:
         font_task = pill.get_font(17)
         sets_name_font_task = pill.get_text_size_frame(name, 18, 153)
         max_level_task = max_lvl(character.promotion)
-        element_panel, path, icon, frame, stars, ups_info, font, sets_name_font, max_level = await asyncio.gather(
-            element_panel_task, path_task, icon_task, frame_task, stars_task, ups_info_task, font_task, sets_name_font_task, max_level_task
+        element_panel, path, icon, frame, stars, ups_info, font, sets_name_font, max_level = (
+            await asyncio.gather(
+                element_panel_task,
+                path_task,
+                icon_task,
+                frame_task,
+                stars_task,
+                ups_info_task,
+                font_task,
+                sets_name_font_task,
+                max_level_task,
+            )
         )
 
         bg = _of.charter_icon_bg.copy()
@@ -207,7 +224,7 @@ class Creat:
 
         for i, (key, value) in enumerate(combined_attributes.items()):
             draw.text(position[i], str(round(value)), font=font, fill=(255, 255, 255, 255))
-        
+
         bg.alpha_composite(stats_bg, (175, 63))
 
         lc = await self.creat_lc(character.light_cone)
@@ -215,8 +232,6 @@ class Creat:
         bg.alpha_composite(lc, (167, 124))
 
         return bg
-
-
 
     async def create_empty_frame_bg(self):
         return Image.new("RGBA", (681, 459), (0, 0, 0, 0))
@@ -227,7 +242,7 @@ class Creat:
         banner, banner_name, frame_bg = await asyncio.gather(
             self.creat_banner(),
             self.creat_name_banner(),
-            self.creat_bg_banner() if self.img else self.create_empty_frame_bg()
+            self.creat_bg_banner() if self.img else self.create_empty_frame_bg(),
         )
 
         banner.alpha_composite(banner_name, (-13, 220))
@@ -238,13 +253,8 @@ class Creat:
         character_tasks = [self.creat_charters(key) for key in self.characters]
         characters = await asyncio.gather(*character_tasks)
 
-        position = [
-            (15, 391),
-            (350, 391),
-            (15, 588),
-            (350, 588)
-        ]
-        
+        position = [(15, 391), (350, 391), (15, 588), (350, 588)]
+
         for key, pos in zip(characters, position):
             bg_two.alpha_composite(key, pos)
 

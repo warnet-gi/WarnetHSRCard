@@ -15,7 +15,7 @@ def get_relic_score_color(score):
         return (255, 126, 126, 255)
     elif 47 <= score:
         return (255, 126, 126, 255)
-    
+
 
 def get_total_score_color(score):
     if score < 11:
@@ -34,7 +34,8 @@ def get_total_score_color(score):
         return (255, 126, 126, 255)
     elif 47 <= score:
         return (255, 126, 126, 255)
-    
+
+
 def get_relic_score_text(score):
     if score < 11:
         return "D"
@@ -52,6 +53,7 @@ def get_relic_score_text(score):
         return "SSS"
     elif 47 <= score:
         return "SSS"
+
 
 def get_relic_full_score_text(score):
     if score < 60:

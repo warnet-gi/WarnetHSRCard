@@ -1,14 +1,15 @@
 # Copyright 2023 DEViantUa <t.me/deviant_ua>
 # All rights reserved.
-from PIL import ImageFont,Image,ImageDraw,ImageChops,ImageFilter,ImageStat
+from PIL import ImageFont, Image, ImageDraw, ImageChops, ImageFilter, ImageStat
 from io import BytesIO
 from . import openFile
-import aiohttp,re, json
+import aiohttp, re, json
 import colorsys
 from cachetools import TTLCache
 import numpy as np
 import colorsys
 from more_itertools import chunked
+
 
 async def get_font(size):
     return ImageFont.truetype(openFile.font, size)
@@ -33,14 +34,14 @@ headers = {
     "referer": "https://www.pixiv.net/",
 }
 
-cache = TTLCache(maxsize=1000, ttl=300)  
+cache = TTLCache(maxsize=1000, ttl=300)
 
-async def get_dowload_img(link,size = None, thumbnail_size = None):
+
+async def get_dowload_img(link, size=None, thumbnail_size=None):
     cache_key = json.dumps((link, size, thumbnail_size), sort_keys=True)  # Преобразовываем в строку
-        
+
     if cache_key in cache:
         return cache[cache_key]
-    
 
     try:
         if "pximg" in link:
@@ -61,8 +62,8 @@ async def get_dowload_img(link,size = None, thumbnail_size = None):
     try:
         image = Image.open(BytesIO(image)).convert("RGBA")
     except:
-        #print(link)
-        image = Image.new("RGBA",(1,1),(0,0,0,0))
+        # print(link)
+        image = Image.new("RGBA", (1, 1), (0, 0, 0, 0))
     if size:
         image = image.resize(size)
         cache[cache_key] = image
@@ -92,41 +93,44 @@ async def get_user_image(img):
         return None
     return img.convert("RGBA")
 
-async def get_resize_image(userImages,baseheight,basewidth):
-    x,y = userImages.size
+
+async def get_resize_image(userImages, baseheight, basewidth):
+    x, y = userImages.size
     if max(x, y) / min(x, y) < 1.1:
-        hpercent = (baseheight / float (y)) 
-        wsize = int ((float (x) * float (hpercent)))
-        userImages = userImages.resize ((wsize, baseheight), Image.LANCZOS)
+        hpercent = baseheight / float(y)
+        wsize = int((float(x) * float(hpercent)))
+        userImages = userImages.resize((wsize, baseheight), Image.LANCZOS)
         return {"img": userImages, "type": 0}
     elif x > y:
-        hpercent = (baseheight / float (y)) 
-        wsize = int ((float (x) * float (hpercent)))
-        userImages = userImages.resize ((wsize, baseheight), Image.LANCZOS)
+        hpercent = baseheight / float(y)
+        wsize = int((float(x) * float(hpercent)))
+        userImages = userImages.resize((wsize, baseheight), Image.LANCZOS)
         return {"img": userImages, "type": 1}
     else:
-        wpercent = (basewidth / float(userImages.size[0]))
+        wpercent = basewidth / float(userImages.size[0])
         hsize = int((float(userImages.size[1]) * float(wpercent)))
         userImages = userImages.resize((basewidth, hsize), Image.LANCZOS)
         if hsize < baseheight:
-            hpercent = (baseheight / float (y)) 
-            wsize = int ((float (x) * float (hpercent)))
-            userImages = userImages.resize ((wsize, baseheight), Image.LANCZOS)
+            hpercent = baseheight / float(y)
+            wsize = int((float(x) * float(hpercent)))
+            userImages = userImages.resize((wsize, baseheight), Image.LANCZOS)
             return {"img": userImages, "type": 2}
         return {"img": userImages, "type": 2}
 
 
-async def get_text_size_frame(text,font_size,frame_width):
+async def get_text_size_frame(text, font_size, frame_width):
     font = await get_font(font_size)
 
     while font.getlength(text) > frame_width:
         font_size -= 1
         font = await get_font(font_size)
 
-    return font,font.getlength(text)
+    return font, font.getlength(text)
 
 
-async def create_image_text(text, font_size, max_width=336, max_height=None, color=(255, 255, 255, 255)):
+async def create_image_text(
+    text, font_size, max_width=336, max_height=None, color=(255, 255, 255, 255)
+):
     original_font = await get_font(font_size)
     font = original_font
     lines = []
@@ -158,7 +162,9 @@ async def create_image_text(text, font_size, max_width=336, max_height=None, col
         new_font_size = int(font_size * reduction_ratio)
         font = await get_font(new_font_size)
 
-    img = Image.new('RGBA', (min(width, max_width), height + (font_size - 4)), color=(255, 255, 255, 0))
+    img = Image.new(
+        'RGBA', (min(width, max_width), height + (font_size - 4)), color=(255, 255, 255, 0)
+    )
 
     draw = ImageDraw.Draw(img)
     y_text = 0
@@ -169,7 +175,10 @@ async def create_image_text(text, font_size, max_width=336, max_height=None, col
 
     return img
 
-async def create_image_with_text(text, font_size, max_width=336, color=(255, 255, 255, 255), alg="Left"):
+
+async def create_image_with_text(
+    text, font_size, max_width=336, color=(255, 255, 255, 255), alg="Left"
+):
     font = await get_font(font_size)
 
     lines = []
@@ -199,7 +208,7 @@ async def create_image_with_text(text, font_size, max_width=336, color=(255, 255
     img = Image.new('RGBA', (min(width, max_width), height + (font_size)), color=(255, 255, 255, 0))
 
     draw = ImageDraw.Draw(img)
-    
+
     y_text = 0
     for line_num, line in enumerate(lines):
         text_width, text_height = font.getmask(' '.join(line)).getbbox()[2:]
@@ -212,12 +221,14 @@ async def create_image_with_text(text, font_size, max_width=336, color=(255, 255
 
     return img
 
+
 async def resize_image(image, scale):
     width, height = image.size
     new_width = int(width * scale)
     new_height = int(height * scale)
     resized_image = image.resize((new_width, new_height))
     return resized_image
+
 
 async def get_centr_honkai(size, file_name):
     # Открываем фоновое изображение и изображение для наложения
@@ -240,52 +251,55 @@ async def get_centr_honkai(size, file_name):
 
     return background_image
 
-async def creat_bg_teample_two(image,bg,maska = None, teample = 2):
+
+async def creat_bg_teample_two(image, bg, maska=None, teample=2):
     if teample == 3:
         bg_element = bg.convert("RGBA")
         splash = await get_dowload_img(link=image)
-        frme_splash = await get_centr_honkai((582,802),splash)
-        frme_splash.alpha_composite(openFile.ImageCache().shadow_art,(0,0))
-        bg_element.alpha_composite(frme_splash,(1342,0))
+        frme_splash = await get_centr_honkai((582, 802), splash)
+        frme_splash.alpha_composite(openFile.ImageCache().shadow_art, (0, 0))
+        bg_element.alpha_composite(frme_splash, (1342, 0))
     elif teample == 4:
         splash = await get_dowload_img(link=image)
-        frme_splash = await get_centr_honkai((685,802),splash)
-        bg_frame = Image.new('RGBA', (685,802), color= (255,255,255,0))
-        bg_frame.alpha_composite(frme_splash,(0,0))
+        frme_splash = await get_centr_honkai((685, 802), splash)
+        bg_frame = Image.new('RGBA', (685, 802), color=(255, 255, 255, 0))
+        bg_frame.alpha_composite(frme_splash, (0, 0))
         bg_element = bg.copy().convert("RGBA")
-        maska_bg =  bg.copy()
-        bg_element.alpha_composite(bg_frame,(0,0))
-        bg_element.paste(maska_bg,(0,0),maska)
-        bg_element.alpha_composite(openFile.ImageCache().shadow_enc,(0,0))
+        maska_bg = bg.copy()
+        bg_element.alpha_composite(bg_frame, (0, 0))
+        bg_element.paste(maska_bg, (0, 0), maska)
+        bg_element.alpha_composite(openFile.ImageCache().shadow_enc, (0, 0))
     elif teample == 5:
         splash = await get_dowload_img(link=image)
-        frme_splash = await get_centr_honkai((370,663),splash)
-        bg_element = Image.new('RGBA', (370,663), color= (255,255,255,0))
-        bg_element.paste(frme_splash,(0,0),maska)
-        bg.alpha_composite(bg_element,(0,0))        
+        frme_splash = await get_centr_honkai((370, 663), splash)
+        bg_element = Image.new('RGBA', (370, 663), color=(255, 255, 255, 0))
+        bg_element.paste(frme_splash, (0, 0), maska)
+        bg.alpha_composite(bg_element, (0, 0))
         return bg
     else:
         splash = await get_dowload_img(link=image)
-        frme_splash = await get_centr_honkai((719,719),splash)
-        bg_frame = Image.new('RGBA', (1916,719), color= (255,255,255,0))
-        bg_frame.alpha_composite(frme_splash,(0,0))
+        frme_splash = await get_centr_honkai((719, 719), splash)
+        bg_frame = Image.new('RGBA', (1916, 719), color=(255, 255, 255, 0))
+        bg_frame.alpha_composite(frme_splash, (0, 0))
         bg_element = bg.copy()
-        maska_bg =  bg.copy()
-        bg_element.alpha_composite(bg_frame,(0,0))
-        bg_element.paste(maska_bg,(0,0),maska)
-        bg_element.alpha_composite(openFile.ImageCache().shadow,(2,0))
+        maska_bg = bg.copy()
+        bg_element.alpha_composite(bg_frame, (0, 0))
+        bg_element.paste(maska_bg, (0, 0), maska)
+        bg_element.alpha_composite(openFile.ImageCache().shadow, (2, 0))
 
     return bg_element
 
+
 async def light_level(pixel_color):
-    h, l, s = colorsys.rgb_to_hls(*(x / 255 for x in pixel_color[:3]))    
+    h, l, s = colorsys.rgb_to_hls(*(x / 255 for x in pixel_color[:3]))
     return l
 
-async def recolor_image(image, target_color, light = False):
+
+async def recolor_image(image, target_color, light=False):
     if light:
         ll = await light_level(target_color)
         if ll < 45:
-            target_color = await _get_light_pixel_color(target_color,up = True)
+            target_color = await _get_light_pixel_color(target_color, up=True)
     if image.mode != 'RGBA':
         image = image.convert('RGBA')
 
@@ -302,20 +316,21 @@ async def recolor_image(image, target_color, light = False):
     return image
 
 
-async def _get_light_pixel_color(pixel_color, up = False):
+async def _get_light_pixel_color(pixel_color, up=False):
     h, l, s = colorsys.rgb_to_hls(*(x / 255 for x in pixel_color[:3]))
     if up:
         l = min(max(0.6, l), 0.9)
     else:
         l = min(max(0.3, l), 0.8)
     return tuple(round(x * 255) for x in colorsys.hls_to_rgb(h, l, s))
-  
+
+
 async def _get_dark_pixel_color(pixel_color):
     h, l, s = colorsys.rgb_to_hls(*(x / 255 for x in pixel_color[:3]))
     l = min(max(0.8, l), 0.2)
     a = tuple(round(x * 255) for x in colorsys.hls_to_rgb(h, l, s))
-    
-    return  a
+
+    return a
 
 
 class GradientGenerator:
@@ -324,7 +339,7 @@ class GradientGenerator:
         self.frame = ()
         self.source_width, self.source_height = self.source_img.size
 
-    async def generate(self, width, height, left = False):
+    async def generate(self, width, height, left=False):
         gradient_img = Image.new("RGB", (width, height))
         top_height = height // 3
         bottom_height = height // 3
@@ -350,7 +365,7 @@ class GradientGenerator:
             top_color = await _get_dark_pixel_color(top_color)
 
         center_color = await self._get_pixel_color(left, top_2, right, bottom_2)
-        
+
         ll = await light_level(center_color)
         if ll < 45:
             center_color = await _get_light_pixel_color(center_color)
@@ -387,11 +402,14 @@ class GradientGenerator:
         cropped_img = self.source_img.crop((left, top, right, bottom))
         resized_img = cropped_img.convert("RGB").resize((1, 1))
         pixel_color = resized_img.getpixel((0, 0))
-        
+
         return pixel_color
-    
+
     def _get_interpolated_color(self, start_color, end_color, ratio):
-        return tuple(int(start_color[i] + (end_color[i] - start_color[i]) * ratio) for i in range(3))
+        return tuple(
+            int(start_color[i] + (end_color[i] - start_color[i]) * ratio) for i in range(3)
+        )
+
 
 async def apply_opacity(image, opacity=0.2):
     result_image = image.copy()
@@ -401,7 +419,8 @@ async def apply_opacity(image, opacity=0.2):
 
     return result_image
 
-class ImageCreat():
+
+class ImageCreat:
     def __init__(self, size, source_img):
         self.source_img = source_img
         self.frame = Image.new("RGBA", size, (0, 0, 0, 0))
@@ -451,105 +470,123 @@ class ImageCreat():
         return resized_img
 
 
-
-
-async def creat_user_image(img, teampl = "1", shadow = None, bg = None):
+async def creat_user_image(img, teampl="1", shadow=None, bg=None):
     position = {
-        "1":
-        {
-            "frame": (769,719), #Область изображения
-            "size_teample": (1916,719), #Размер всего изображения
-            "baseheight": 770, #Квадрат
-            "basewidth": 769, #Вертикально
-            "baseheight_wide": None, #Широкий
+        "1": {
+            "frame": (769, 719),  # Область изображения
+            "size_teample": (1916, 719),  # Размер всего изображения
+            "baseheight": 770,  # Квадрат
+            "basewidth": 769,  # Вертикально
+            "baseheight_wide": None,  # Широкий
             "centry": 385,
             "start_x": 0,
             "start_y": 0,
-            "mask": openFile.ImageCache().MASKA_ART_CUSTUM.convert("L"), 
-            "effect": openFile.ImageCache().effect_stars.convert("RGBA") 
+            "mask": openFile.ImageCache().MASKA_ART_CUSTUM.convert("L"),
+            "effect": openFile.ImageCache().effect_stars.convert("RGBA"),
         },
     }.get(teampl)
-    frame = Image.new("RGBA", position["size_teample"], (0,0,0,0))
-    userImagess = await ImageCreat(position["frame"],img).get_centry_image(baseheight = position["baseheight"], basewidth = position["basewidth"], baseheight_wide = position["baseheight_wide"], centry = position["centry"])
-    grandient = await GradientGenerator(userImagess).generate(1,position["size_teample"][1])
+    frame = Image.new("RGBA", position["size_teample"], (0, 0, 0, 0))
+    userImagess = await ImageCreat(position["frame"], img).get_centry_image(
+        baseheight=position["baseheight"],
+        basewidth=position["basewidth"],
+        baseheight_wide=position["baseheight_wide"],
+        centry=position["centry"],
+    )
+    grandient = await GradientGenerator(userImagess).generate(1, position["size_teample"][1])
     grandient = grandient.resize(position["size_teample"])
     grandient = ImageChops.soft_light(grandient.convert("RGBA"), position["effect"])
 
-    frame.alpha_composite(userImagess,(position["start_x"],position["start_y"]))
+    frame.alpha_composite(userImagess, (position["start_x"], position["start_y"]))
 
+    bg.paste(frame, (0, 0), openFile.ImageCache().MASKA_ARTS.convert("L"))
 
-    bg.paste(frame,(0,0), openFile.ImageCache().MASKA_ARTS.convert("L"))
+    bg.paste(grandient, (0, 0), position["mask"])
 
-    bg.paste(grandient,(0,0),position["mask"])
+    bg.alpha_composite(shadow, (0, 0))
 
-    bg.alpha_composite(shadow,(0,0))
-    
     return bg
 
-async def creat_user_image_tree(img,characterBackgroundimg,backgroundBlur):
-    bg = Image.new("RGBA", (1924,802), (36,36,36,255))
-    userImagess = await ImageCreat((582,802),img).get_centry_image(baseheight = 802, basewidth = 582, baseheight_wide = None, centry = 291)
+
+async def creat_user_image_tree(img, characterBackgroundimg, backgroundBlur):
+    bg = Image.new("RGBA", (1924, 802), (36, 36, 36, 255))
+    userImagess = await ImageCreat((582, 802), img).get_centry_image(
+        baseheight=802, basewidth=582, baseheight_wide=None, centry=291
+    )
     if characterBackgroundimg is None:
-        grandient = await GradientGenerator(userImagess).generate(1,802, left= True)
-        grandient = grandient.resize((1350,802))
-        bg.alpha_composite(grandient.convert("RGBA"),(0,0))
+        grandient = await GradientGenerator(userImagess).generate(1, 802, left=True)
+        grandient = grandient.resize((1350, 802))
+        bg.alpha_composite(grandient.convert("RGBA"), (0, 0))
         grandient = ImageChops.soft_light(bg, openFile.ImageCache().overlay.convert("RGBA"))
-        grandient.alpha_composite(openFile.ImageCache().art_frame,(0,0))
-        userImagess.alpha_composite(openFile.ImageCache().shadow_art,(0,0))
-        grandient.alpha_composite(userImagess,(1342,0))
+        grandient.alpha_composite(openFile.ImageCache().art_frame, (0, 0))
+        userImagess.alpha_composite(openFile.ImageCache().shadow_art, (0, 0))
+        grandient.alpha_composite(userImagess, (1342, 0))
     else:
-        #ТУТ ДОБАВЛЯЕМ ФОН ПОЛЬЗОВАТЕЛЯ
+        # ТУТ ДОБАВЛЯЕМ ФОН ПОЛЬЗОВАТЕЛЯ
         if backgroundBlur:
-            shadow = Image.new("RGBA", (1350,802), (0,0,0,20))
-            bgmagess = await ImageCreat((1350,802),characterBackgroundimg).get_centry_image(baseheight = 802, basewidth = 1350, baseheight_wide = 900, centry = 675)
+            shadow = Image.new("RGBA", (1350, 802), (0, 0, 0, 20))
+            bgmagess = await ImageCreat((1350, 802), characterBackgroundimg).get_centry_image(
+                baseheight=802, basewidth=1350, baseheight_wide=900, centry=675
+            )
             grandient = bgmagess.filter(ImageFilter.GaussianBlur(5))
-            grandient.alpha_composite(shadow,(0,0))
-            bg.alpha_composite(grandient.convert("RGBA"),(0,0))
+            grandient.alpha_composite(shadow, (0, 0))
+            bg.alpha_composite(grandient.convert("RGBA"), (0, 0))
             grandient = ImageChops.soft_light(bg, openFile.ImageCache().overlay.convert("RGBA"))
-            grandient.alpha_composite(openFile.ImageCache().art_frame,(0,0))
-            userImagess.alpha_composite(openFile.ImageCache().shadow_art,(0,0))
-            grandient.alpha_composite(userImagess,(1342,0))
-            #ТУТ РАЗМЫВАЕМ и ДОБАВЛЕМ ТЕНЬ
+            grandient.alpha_composite(openFile.ImageCache().art_frame, (0, 0))
+            userImagess.alpha_composite(openFile.ImageCache().shadow_art, (0, 0))
+            grandient.alpha_composite(userImagess, (1342, 0))
+            # ТУТ РАЗМЫВАЕМ и ДОБАВЛЕМ ТЕНЬ
         else:
-            shadow = Image.new("RGBA", (1350,802), (0,0,0,20))
-            grandient = await ImageCreat((1350,802),characterBackgroundimg).get_centry_image(baseheight = 802, basewidth = 1350, baseheight_wide = 900, centry = 675)
-            grandient.alpha_composite(shadow,(0,0))
-            bg.alpha_composite(grandient.convert("RGBA"),(0,0))
+            shadow = Image.new("RGBA", (1350, 802), (0, 0, 0, 20))
+            grandient = await ImageCreat((1350, 802), characterBackgroundimg).get_centry_image(
+                baseheight=802, basewidth=1350, baseheight_wide=900, centry=675
+            )
+            grandient.alpha_composite(shadow, (0, 0))
+            bg.alpha_composite(grandient.convert("RGBA"), (0, 0))
             grandient = ImageChops.soft_light(bg, openFile.ImageCache().overlay.convert("RGBA"))
-            grandient.alpha_composite(openFile.ImageCache().art_frame,(0,0))
-            userImagess.alpha_composite(openFile.ImageCache().shadow_art,(0,0))
-            grandient.alpha_composite(userImagess,(1342,0))
+            grandient.alpha_composite(openFile.ImageCache().art_frame, (0, 0))
+            userImagess.alpha_composite(openFile.ImageCache().shadow_art, (0, 0))
+            grandient.alpha_composite(userImagess, (1342, 0))
 
     return grandient
 
+
 async def creat_user_image_five(img):
-    bg = Image.new("RGBA", (370,663), (0,0,0,0))
-    userImagess = await ImageCreat((370,663),img).get_centry_image(baseheight = 663, basewidth = 370, baseheight_wide = None, centry = 185)
-    bg.paste(userImagess,(0,0),openFile.ImageCache().mask_bg_five.convert("L"))
-    bg.alpha_composite(openFile.ImageCache().shadow_bg_five,(0,0))
-    
+    bg = Image.new("RGBA", (370, 663), (0, 0, 0, 0))
+    userImagess = await ImageCreat((370, 663), img).get_centry_image(
+        baseheight=663, basewidth=370, baseheight_wide=None, centry=185
+    )
+    bg.paste(userImagess, (0, 0), openFile.ImageCache().mask_bg_five.convert("L"))
+    bg.alpha_composite(openFile.ImageCache().shadow_bg_five, (0, 0))
+
     return bg
-    
+
 
 async def creat_user_image_four(img):
-    bg = Image.new("RGBA", (1924,802), (0,0,0,0))
-    userImagess = await get_centr_honkai_art((685,802),img) #await ImageCreat((685,803),img).get_centry_image(baseheight = 1082, basewidth = 582, baseheight_wide = None, centry = 342)
-    grandient = await GradientGenerator(userImagess).generate(1,802)
-    grandient = grandient.resize((1924,802)).convert("RGBA")
-    
+    bg = Image.new("RGBA", (1924, 802), (0, 0, 0, 0))
+    userImagess = await get_centr_honkai_art(
+        (685, 802), img
+    )  # await ImageCreat((685,803),img).get_centry_image(baseheight = 1082, basewidth = 582, baseheight_wide = None, centry = 342)
+    grandient = await GradientGenerator(userImagess).generate(1, 802)
+    grandient = grandient.resize((1924, 802)).convert("RGBA")
+
     grandient = ImageChops.soft_light(grandient, openFile.ImageCache().effect_soft.convert("RGBA"))
-    bg.alpha_composite(grandient,(0,0))
-    bg.alpha_composite(userImagess,(0,0))
-    bg.paste(grandient.resize((1924,802)),(0,0),openFile.ImageCache().maska_background.convert("L"))
-    bg.alpha_composite(openFile.ImageCache().shadow_enc,(0,0))
+    bg.alpha_composite(grandient, (0, 0))
+    bg.alpha_composite(userImagess, (0, 0))
+    bg.paste(
+        grandient.resize((1924, 802)), (0, 0), openFile.ImageCache().maska_background.convert("L")
+    )
+    bg.alpha_composite(openFile.ImageCache().shadow_enc, (0, 0))
     return bg
+
 
 async def get_centr_honkai_art(size, file_name):
     background_image = Image.new('RGBA', size, color=(0, 0, 0, 0))
     foreground_image = file_name.convert("RGBA")
 
     scale = max(size[0] / foreground_image.size[0], size[1] / foreground_image.size[1])
-    foreground_image = foreground_image.resize((int(foreground_image.size[0] * scale), int(foreground_image.size[1] * scale)))
+    foreground_image = foreground_image.resize(
+        (int(foreground_image.size[0] * scale), int(foreground_image.size[1] * scale))
+    )
 
     background_size = background_image.size
     foreground_size = foreground_image.size
@@ -557,7 +594,9 @@ async def get_centr_honkai_art(size, file_name):
     x = background_size[0] // 2 - foreground_size[0] // 2
 
     if foreground_size[1] > background_size[1]:
-        y_offset = max(int(0.3 * (foreground_size[1] - background_size[1])), int(0.5 * (-foreground_size[1])))
+        y_offset = max(
+            int(0.3 * (foreground_size[1] - background_size[1])), int(0.5 * (-foreground_size[1]))
+        )
         y = -y_offset
     else:
         y = background_size[1] // 2 - foreground_size[1] // 2
@@ -567,26 +606,24 @@ async def get_centr_honkai_art(size, file_name):
     return background_image
 
 
-
 async def apply_blur_and_overlay(img):
     background = Image.new("RGBA", (681, 459), (0, 0, 0, 0))
 
-    overlay = await get_centr_honkai_art((694, 802),img)
+    overlay = await get_centr_honkai_art((694, 802), img)
 
     overlay_blurred = overlay.filter(ImageFilter.GaussianBlur(radius=10))
 
-    background.alpha_composite(overlay_blurred,(0,-343))
+    background.alpha_composite(overlay_blurred, (0, -343))
 
     return background
-
 
 
 async def get_average_color(image):
     if image.mode != 'RGBA':
         image = image.convert('RGBA')
-    
+
     channels = image.split()
-    
+
     return (
         round(np.average(channels[0], weights=channels[-1])),
         round(np.average(channels[1], weights=channels[-1])),
@@ -604,17 +641,24 @@ async def get_dominant_colors(
     if image.mode != 'RGB':
         if image.mode != 'RGBA':
             image = image.convert('RGBA')
-        
+
         if not common:
             width = image.width
             height = image.height
-            
-            image = Image.fromarray(np.array([np.repeat(
-                np.reshape(image.convert('RGB'), (width * height, 3)),
-                np.reshape(image.split()[-1], width * height),
-                0,
-            )]), 'RGB')
-    
+
+            image = Image.fromarray(
+                np.array(
+                    [
+                        np.repeat(
+                            np.reshape(image.convert('RGB'), (width * height, 3)),
+                            np.reshape(image.split()[-1], width * height),
+                            0,
+                        )
+                    ]
+                ),
+                'RGB',
+            )
+
     if image.mode == 'RGBA':
         if dither == Image.Quantize.FASTOCTREE:
             simple_image = image.copy()
@@ -623,43 +667,52 @@ async def get_dominant_colors(
             simple_image = image.convert('RGB')
     else:
         simple_image = image
-    
+
     reduced = simple_image.quantize(dither=dither, colors=number)
-    
+
     palette = [*chunked(reduced.getpalette(), 3)]
-    
+
     if common and image.mode == 'RGBA':
         alpha = np.array(image.split()[-1])
-        
-        colors = sorted((
+
+        colors = sorted(
             (
-                np.sum(alpha * reduced.point([0] * i + [1] + [0] * (255 - i))),
-                tuple(palette[i]),
-            )
-            for _, i in reduced.getcolors()
-        ), reverse=True)
+                (
+                    np.sum(alpha * reduced.point([0] * i + [1] + [0] * (255 - i))),
+                    tuple(palette[i]),
+                )
+                for _, i in reduced.getcolors()
+            ),
+            reverse=True,
+        )
     else:
-        colors = [
-            (n, tuple(palette[i]))
-            for n, i in sorted(reduced.getcolors(), reverse=True)
-        ]
-    
+        colors = [(n, tuple(palette[i])) for n, i in sorted(reduced.getcolors(), reverse=True)]
+
     return tuple(colors)
 
 
 async def get_distance_alpha(image, converter=(lambda x: x)):
     width = image.width
     height = image.height
-    
+
     radius = np.hypot(1, 1)
-    
-    return Image.fromarray(np.fromfunction(
-        lambda y, x: np.uint8(255 * converter(np.hypot(
-            2 * x / (width - 1) - 1,
-            2 * y / (height - 1) - 1,
-        ) / radius)),
-        (height, width),
-    ), 'L')
+
+    return Image.fromarray(
+        np.fromfunction(
+            lambda y, x: np.uint8(
+                255
+                * converter(
+                    np.hypot(
+                        2 * x / (width - 1) - 1,
+                        2 * y / (height - 1) - 1,
+                    )
+                    / radius
+                )
+            ),
+            (height, width),
+        ),
+        'L',
+    )
 
 
 async def get_background_alpha(image):
@@ -675,25 +728,27 @@ async def get_foreground_alpha(image):
         lambda x: 1 - x * np.sin(x * np.pi / 2),
     )
 
-async def get_background_colors(image,number,*,common=False,radius=1,quality=None):
+
+async def get_background_colors(image, number, *, common=False, radius=1, quality=None):
     if quality is not None:
         image = image.copy()
         image.thumbnail((quality, quality), 0)
-    
+
     if radius > 1:
         image = image.filter(ImageFilter.BoxBlur(radius))
-    
+
     filtered_image = image.convert('RGB')
-    
+
     if image.mode != 'RGBA':
         filtered_image.putalpha(await get_background_alpha(image))
     else:
-        filtered_image.putalpha(Image.fromarray(np.uint8(
-            np.uint16(await get_background_alpha(image))
-            * image.split()[-1]
-            / 255
-        ), 'L'))
-    
+        filtered_image.putalpha(
+            Image.fromarray(
+                np.uint8(np.uint16(await get_background_alpha(image)) * image.split()[-1] / 255),
+                'L',
+            )
+        )
+
     color_palette = await get_dominant_colors(filtered_image, number, common=common)
     color_palette = color_palette[0][1]
     ll = await light_level(color_palette)
@@ -701,29 +756,28 @@ async def get_background_colors(image,number,*,common=False,radius=1,quality=Non
         color_palette = await _get_light_pixel_color(color_palette)
     elif ll > 0.80:
         color_palette = await _get_dark_pixel_color(color_palette)
-        
-        
+
     return color_palette
-     
 
 
-async def get_foreground_colors(image,number,*,common=False,radius=1,quality=None):
+async def get_foreground_colors(image, number, *, common=False, radius=1, quality=None):
     if quality is not None:
         image = image.copy()
         image.thumbnail((quality, quality), 0)
-    
+
     if radius > 1:
         image = image.filter(ImageFilter.BoxBlur(radius))
-    
+
     filtered_image = image.convert('RGB')
-    
+
     if image.mode != 'RGBA':
         filtered_image.putalpha(await get_foreground_alpha(image))
     else:
-        filtered_image.putalpha(Image.fromarray(np.uint8(
-            np.uint16(await  get_foreground_alpha(image))
-            * image.split()[-1]
-            / 255
-        ), 'L'))
-    
-    return await  get_dominant_colors(filtered_image, number, common=common)
+        filtered_image.putalpha(
+            Image.fromarray(
+                np.uint8(np.uint16(await get_foreground_alpha(image)) * image.split()[-1] / 255),
+                'L',
+            )
+        )
+
+    return await get_dominant_colors(filtered_image, number, common=common)

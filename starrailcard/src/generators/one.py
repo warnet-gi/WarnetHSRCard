@@ -1,7 +1,7 @@
 # Copyright 2023 DEViantUa <t.me/deviant_ua>
 # All rights reserved.
 import asyncio
-from PIL import ImageDraw,Image
+from PIL import ImageDraw, Image
 from ..tools import pill, openFile, treePaths
 
 _of = openFile.ImageCache()
@@ -26,7 +26,7 @@ async def max_lvl(x):
     elif x == 1:
         max = 30
     elif x == 2:
-        max = 40 
+        max = 40
     elif x == 3:
         max = 50
     elif x == 4:
@@ -35,12 +35,13 @@ async def max_lvl(x):
         max = 70
     else:
         max = 80
-    
+
     return max
+
 
 class Creat:
 
-    def __init__(self,characters, lang,img,hide,uid,name,background) -> None:
+    def __init__(self, characters, lang, img, hide, uid, name, background) -> None:
         self.character = characters
         self.lang = lang
         self.img = img
@@ -48,7 +49,7 @@ class Creat:
         self.uid = uid
         self.name = name
         self.background = background
-    
+
     async def creat_constant(self):
         background_skills = Image.new("RGBA", (74, 363), (0, 0, 0, 0))
         y = 11
@@ -89,8 +90,10 @@ class Creat:
             if user_image["type"] == 2:
                 bg_new.alpha_composite(user_image["img"], (0, 0))
             else:
-                bg_new.alpha_composite(user_image["img"], (int(187 - user_image["img"].size[0] / 2), 0))
-            
+                bg_new.alpha_composite(
+                    user_image["img"], (int(187 - user_image["img"].size[0] / 2), 0)
+                )
+
             bg.paste(bg_new, (0, 0), _of.maska_charters.convert("L"))
         else:
             bg_new = _of.bg_charters.copy()
@@ -140,11 +143,11 @@ class Creat:
     async def creat_light_cone(self):
         bg_new = _of.bg_lc.copy()
         if self.character.light_cone is None:
-            return Image.new("RGBA", (0,0), (0,0,0,0))
-        image = await pill.get_dowload_img(self.character.light_cone.portrait, size=(203,276))
-        bg_new.alpha_composite(image,(8,5))
+            return Image.new("RGBA", (0, 0), (0, 0, 0, 0))
+        image = await pill.get_dowload_img(self.character.light_cone.portrait, size=(203, 276))
+        bg_new.alpha_composite(image, (8, 5))
         bg = _of.bg_lc.copy()
-        bg.paste(bg_new,(0,0),_of.maska_lc.convert("L"))
+        bg.paste(bg_new, (0, 0), _of.maska_lc.convert("L"))
 
         frame = _of.bg_lc_total.copy()
 
@@ -156,22 +159,22 @@ class Creat:
         return frame
 
     async def create_light_cone_image(self, frame, bg):
-        path = await pill.get_dowload_img(self.character.light_cone.path.icon, size= (38,39))
+        path = await pill.get_dowload_img(self.character.light_cone.path.icon, size=(38, 39))
         stars = await get_stars_icon(self.character.light_cone.rarity)
         rank = f"S{self.character.light_cone.rank}"
         max_level = await max_lvl(self.character.light_cone.promotion)
         level = f"{self.lang.lvl}: {self.character.light_cone.level}/{max_level}"
 
-        frame.alpha_composite(path, (321,179))
-        frame.alpha_composite(stars.resize((84,23)),(323,227))
+        frame.alpha_composite(path, (321, 179))
+        frame.alpha_composite(stars.resize((84, 23)), (323, 227))
 
         d = ImageDraw.Draw(frame)
-        font,size = await pill.get_text_size_frame(level, 14, 84)
-        d.text((int(366-size/2),146), level, font= font, fill=(255,255,255,255))
+        font, size = await pill.get_text_size_frame(level, 14, 84)
+        d.text((int(366 - size / 2), 146), level, font=font, fill=(255, 255, 255, 255))
 
         font = await pill.get_font(24)
-        x = int(font.getlength(rank)/2)
-        d.text((384-x,184), rank, font= font, fill=(255,207,131,255))
+        x = int(font.getlength(rank) / 2)
+        d.text((384 - x, 184), rank, font=font, fill=(255, 207, 131, 255))
 
         HP = self.character.light_cone.attributes[0].display
         ATK = self.character.light_cone.attributes[1].display
@@ -179,17 +182,19 @@ class Creat:
 
         font = await pill.get_font(24)
         x = int(font.getlength(HP))
-        d.text((302-x,145), HP, font= font, fill=(255,255,255,255))
+        d.text((302 - x, 145), HP, font=font, fill=(255, 255, 255, 255))
         x = int(font.getlength(ATK))
-        d.text((302-x,177), ATK, font= font, fill=(255,255,255,255))
+        d.text((302 - x, 177), ATK, font=font, fill=(255, 255, 255, 255))
         x = int(font.getlength(DF))
-        d.text((302-x,208), DF, font= font, fill=(255,255,255,255))
+        d.text((302 - x, 208), DF, font=font, fill=(255, 255, 255, 255))
 
-        names = await pill.create_image_with_text(self.character.light_cone.name, 16, max_width=211, color=(255, 255, 255, 255))
+        names = await pill.create_image_with_text(
+            self.character.light_cone.name, 16, max_width=211, color=(255, 255, 255, 255)
+        )
         x_names = 310 - names.size[0] // 2
-        frame.alpha_composite(names, (x_names, 105-names.size[1]))
+        frame.alpha_composite(names, (x_names, 105 - names.size[1]))
 
-        frame.alpha_composite(bg,(0,0))
+        frame.alpha_composite(bg, (0, 0))
 
     async def creat_stats(self):
         bg_new = _of.STATS.copy()
@@ -211,7 +216,11 @@ class Creat:
             icon = await pill.get_dowload_img(attribute.icon, size=(32, 34))
             bg_new.alpha_composite(icon, (x_icon, y_icon))
 
-            value = "{:.1f}%".format(attribute.value * 100) if attribute.percent else round(attribute.value)
+            value = (
+                "{:.1f}%".format(attribute.value * 100)
+                if attribute.percent
+                else round(attribute.value)
+            )
             x = x_text - int(font.getlength(str(value)))
             d.text((x, y_text), str(value), font=font, fill=(255, 255, 255, 255))
 
@@ -225,13 +234,10 @@ class Creat:
                 x_text += 140
 
         return bg_new
-                
+
     async def creat_info_user(self):
         bg = _of.uid.copy()
-        font, font_uid = await asyncio.gather(
-            pill.get_font(30),
-            pill.get_font(18)
-        )
+        font, font_uid = await asyncio.gather(pill.get_font(30), pill.get_font(18))
 
         d = ImageDraw.Draw(bg)
 
@@ -246,8 +252,10 @@ class Creat:
     async def main_skills(self):
         bg = _of.bg_main.copy()
         positions = [
-            (24, 13), (111, 13),
-            (24, 85), (111, 85),
+            (24, 13),
+            (111, 13),
+            (24, 85),
+            (111, 85),
         ]
 
         tasks = []
@@ -262,8 +270,7 @@ class Creat:
         d = ImageDraw.Draw(count)
         bg_talants = _of.bg_talants.copy()
         icon, font = await asyncio.gather(
-            pill.get_dowload_img(skill.icon, size=(35, 30)),
-            pill.get_font(14)
+            pill.get_dowload_img(skill.icon, size=(35, 30)), pill.get_font(14)
         )
 
         if skill.level > 9:
@@ -277,15 +284,20 @@ class Creat:
 
     async def create_dop_stats_icon(self, bg_full, key, res, position, y):
         data_dop = []
-        
+
         for keys in self.character.skill_trees:
             if str(keys.id) in res:
                 data_dop.append(keys.icon)
 
-        bg = _of.dop_0.copy() if len(data_dop) == 0 else \
-            _of.dop_1.copy() if len(data_dop) == 1 else \
-            _of.dop_2.copy() if len(data_dop) == 2 else \
-            _of.dop_3.copy()
+        bg = (
+            _of.dop_0.copy()
+            if len(data_dop) == 0
+            else (
+                _of.dop_1.copy()
+                if len(data_dop) == 1
+                else _of.dop_2.copy() if len(data_dop) == 2 else _of.dop_3.copy()
+            )
+        )
 
         icon_stats = await pill.get_dowload_img(key.icon, size=(35, 35))
         bg.alpha_composite(icon_stats, (3, 5))
@@ -323,7 +335,14 @@ class Creat:
                 if key.properties == []:
                     rel_set[key.id] = {"num": int(key.num), "icon": key.icon, "properties": None}
                 else:
-                    rel_set[key.id] = {"num": int(key.num), "icon": key.icon, "properties": {"icon": key.properties[0].icon, "display": key.properties[0].display}}
+                    rel_set[key.id] = {
+                        "num": int(key.num),
+                        "icon": key.icon,
+                        "properties": {
+                            "icon": key.properties[0].icon,
+                            "display": key.properties[0].display,
+                        },
+                    }
             else:
                 rel_set[key.id]["num"] = int(key.num)
 
@@ -358,7 +377,12 @@ class Creat:
         if set_data["properties"] is not None:
             icon_stats = await pill.get_dowload_img(set_data["properties"]["icon"], size=(23, 24))
             frame.alpha_composite(icon_stats, (10, 62))
-            d.text((31, 63), str(set_data["properties"]["display"]), font=fontC, fill=(255, 255, 255, 255))
+            d.text(
+                (31, 63),
+                str(set_data["properties"]["display"]),
+                font=fontC,
+                fill=(255, 255, 255, 255),
+            )
 
         frame.alpha_composite(icon, (17, 8))
         frame.alpha_composite(count, (52, 0))
@@ -414,7 +438,7 @@ class Creat:
         if self.background:
             bg = _of.total_bg.copy().convert("RGBA")
         else:
-            bg = Image.new("RGBA", (1015,696), (0,0,0,0))
+            bg = Image.new("RGBA", (1015, 696), (0, 0, 0, 0))
 
         tasks = [
             self.creat_charters(),
@@ -423,7 +447,7 @@ class Creat:
             self.creat_info_user(),
             self.main_skills(),
             self.create_sets(),
-            self.dop_stats()
+            self.dop_stats(),
         ]
 
         backg, lc, stats, user, main_skills, sets, stats_dop = await asyncio.gather(*tasks)
@@ -436,7 +460,7 @@ class Creat:
             (main_skills, (-2, 74)),
             (stats_dop, (-2, 229)),
             (sets, (0, 451)),
-            (_of.logo, (679, 11))
+            (_of.logo, (679, 11)),
         ]
 
         for image, position in operations:
@@ -463,9 +487,7 @@ class Creat:
             "name": self.character.name,
             "rarity": self.character.rarity,
             "card": bg,
-            "size": bg.size
+            "size": bg.size,
         }
 
         return data
-
-        

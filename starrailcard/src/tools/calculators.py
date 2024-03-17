@@ -5,32 +5,35 @@ import aiohttp
 
 url = "https://raw.githubusercontent.com/Mar-7th/StarRailScore/master/score.json"
 
+
 async def fetch_data():
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             data = await response.json(content_type='text/plain')
             return data
-        
+
 
 data = None
+
 
 async def get_rank(value):
     if value >= 43.7:
         return "SSS"
     elif value >= 37.8 and value < 43.7:
         return "SS"
-    elif value >= 33.5 and value  < 37.8:
+    elif value >= 33.5 and value < 37.8:
         return "S"
     elif value >= 29.1 and value < 33.5:
         return "A"
-    elif value >= 23.3 and value  < 29.1:
+    elif value >= 23.3 and value < 29.1:
         return "B"
-    elif value >= 17.5 and value  < 23.3:
+    elif value >= 17.5 and value < 23.3:
         return "C"
-    elif value >= 11.6 and value  < 17.5:
+    elif value >= 11.6 and value < 17.5:
         return "D"
     else:
         return "N/A"
+
 
 async def get_total_rank(value):
     value /= 6
@@ -38,22 +41,21 @@ async def get_total_rank(value):
         return "SSS"
     elif value >= 37.8 and value < 43.7:
         return "SS"
-    elif value >= 33.5 and value  < 37.8:
+    elif value >= 33.5 and value < 37.8:
         return "S"
     elif value >= 29.1 and value < 33.5:
         return "A"
-    elif value >= 23.3 and value  < 29.1:
+    elif value >= 23.3 and value < 29.1:
         return "B"
-    elif value >= 17.5 and value  < 23.3:
+    elif value >= 17.5 and value < 23.3:
         return "C"
-    elif value >= 11.6 and value  < 17.5:
+    elif value >= 11.6 and value < 17.5:
         return "D"
     else:
         return "N/A"
 
 
-
-async def get_rating(relic,chart_id, position):
+async def get_rating(relic, chart_id, position):
     global data
     if data is None:
         data = await fetch_data()
@@ -64,7 +66,7 @@ async def get_rating(relic,chart_id, position):
         if str(chart_id) in data:
             if relic.main_affix.type in data[str(chart_id)]["main"][position]:
                 value_main = data[str(chart_id)]["main"][position][relic.main_affix.type]
-        
+
             i = 0
             score = 0
             for key in relic.sub_affix:
@@ -78,13 +80,14 @@ async def get_rating(relic,chart_id, position):
                 score += value
 
             score += Eff_Stat * value_main
-            score = 55/10.0*score
+            score = 55 / 10.0 * score
 
             return score, await get_rank(score), Eff_Stat
     return 0, await get_rank(0), 0
 
 
 from pydantic import BaseModel
+
 
 class Affix(BaseModel):
     type: str
@@ -96,6 +99,7 @@ class Affix(BaseModel):
     percent: bool = False
     count: int = 0
     step: int = 0
+
 
 class Relic(BaseModel):
     id: str
@@ -124,7 +128,7 @@ async def get_seeleland(uid, charter_id):
     for key in data:
         if key["k"] == str(charter_id):
             data = key.get("lb")
-    
+
     if data != {} and data is not None:
         for key in data:
             if isinstance(key, dict):
@@ -132,5 +136,3 @@ async def get_seeleland(uid, charter_id):
             return data[key]
     else:
         return None
-
-    
