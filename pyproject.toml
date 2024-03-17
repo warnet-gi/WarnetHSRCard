@@ -15,6 +15,8 @@ keywords = ["honkai", "cards", "generation", "honkaistarraill","raill", "starrai
 Pillow = "^10.0.1"
 honkairail = "^1.1.4"
 python = "^3.9"
+beautifulsoup4 = "^4.12.3"
+aiohttp = "^3.9.3"
 
 [tool.poetry.dev-dependencies]
 cachetools = "^5.3.1"

@@ -10,12 +10,10 @@ setup(
         'Pillow>=10.0.1',
         'honkairail>=1.1.4',
         'python>=3.9',
+        'beautifulsoup4>=4.12.3',
+        'aiohttp>=3.9.3',
+        'cachetools>=5.3.1',
     ],
-    extras_require={
-        'dev': [
-            'cachetools>=5.3.1',
-        ]
-    },
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
