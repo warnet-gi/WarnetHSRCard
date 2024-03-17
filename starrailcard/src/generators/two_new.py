@@ -167,7 +167,7 @@ class Creat:
         self.background.paste(background_art, (0, 0), _of.background_maska_art.convert("L"))
         self.background.alpha_composite(_of.background_shadow)
         self.background.alpha_composite(line, (693, -7))
-        self.background.alpha_composite(_of.LOGO_GIT)
+        self.background.alpha_composite(_of.LOGO_WARNET)
 
         if not self.hide:
             uid = Image.new("RGBA", (1920, 782), (0, 0, 0, 0))

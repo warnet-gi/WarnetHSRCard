@@ -254,7 +254,7 @@ mapping = {
     'g_three': assets / 'teample_two_new' / 'stars' / 'g_three.png',
     'g_two': assets / 'teample_two_new' / 'stars' / 'g_two.png',
     'g_one': assets / 'teample_two_new' / 'stars' / 'g_one.png',
-    'LOGO_GIT': assets / 'teample_two_new' / 'LOGO.png',
+    'LOGO_WARNET': assets / 'teample_two_new' / 'LOGO.png',
     'path_count': assets / 'teample_two_new' / 'path' / 'count.png',
     'path_closed_main': assets / 'teample_two_new' / 'path' / 'closed_main.png',
     'path_closed_dop': assets / 'teample_two_new' / 'path' / 'closed_dop.png',
