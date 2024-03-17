@@ -20,8 +20,15 @@ setup(
         'Operating System :: OS Independent',
     ],
     keywords=[
-        'honkai', 'cards', 'generation', 'honkaistarraill', 'raill', 'starraill',
-        'builds', 'honkairail', 'honkai'
+        'honkai',
+        'cards',
+        'generation',
+        'honkaistarraill',
+        'raill',
+        'starraill',
+        'builds',
+        'honkairail',
+        'honkai',
     ],
     url='https://github.com/DEViantUA/StarRailCard',
     project_urls={
@@ -31,11 +38,10 @@ setup(
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
     package_data={
-    'starrailcard': [
-        'src/tools/**/*',
-        'src/generators/**/*',
-        'src/assets/**/*',
-    ],
-},
-
+        'starrailcard': [
+            'src/tools/**/*',
+            'src/generators/**/*',
+            'src/assets/**/*',
+        ],
+    },
 )

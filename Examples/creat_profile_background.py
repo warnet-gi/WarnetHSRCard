@@ -1,9 +1,12 @@
 import asyncio
 import starrailcard
 
+
 async def main():
     async with starrailcard.Card() as card:
-        data = await card.creat_profile(700649319, style=2, background= "https://images4.alphacoders.com/133/1335400.png")
+        data = await card.creat_profile(
+            700649319, style=2, background="https://images4.alphacoders.com/133/1335400.png"
+        )
 
     print("Settings:")
     print(f"  UID: {data.settings.uid}")
@@ -12,7 +15,7 @@ async def main():
     print(f"  Save: {data.settings.save}")
     print(f"  Force Update: {data.settings.force_update}")
     print(f"  Style: {data.settings.style}")
-    
+
     print("\nPlayer:")
     print(f"  UID: {data.player.uid}")
     print(f"  Nickname: {data.player.nickname}")
@@ -32,15 +35,16 @@ async def main():
     print(f"    Light Cone Count: {data.player.space_info.light_cone_count}")
     print(f"    Avatar Count: {data.player.space_info.avatar_count}")
     print(f"    Achievement Count: {data.player.space_info.achievement_count}")
-    
+
     print("\nCharacter Names:")
     for name in data.character_name:
         print(f"  - {name}")
-    
+
     print("\nCharacter IDs:")
     for cid in data.character_id:
         print(f"  - {cid}")
 
     print(f"\nCard: {data.card}")
+
 
 asyncio.run(main())

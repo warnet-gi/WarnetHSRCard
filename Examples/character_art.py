@@ -9,11 +9,16 @@ character_art = {
     "1006": "https://i.ibb.co/M7f4Xvg/109206813-p2-master1200.png",
     "1307": "https://i.pximg.net/img-master/img/2024/02/11/00/18/25/115939009_p0_master1200.jpg",
     "1102": "https://i.ibb.co/MfmDcmh/108269946-p0-master1200.jpg",
-    "1112": ["https://i.pximg.net/img-master/img/2023/11/09/10/35/56/113260471_p0_master1200.jpg","https://i.pximg.net/img-master/img/2024/01/21/17/15/18/115358703_p0_master1200.jpg"],
+    "1112": [
+        "https://i.pximg.net/img-master/img/2023/11/09/10/35/56/113260471_p0_master1200.jpg",
+        "https://i.pximg.net/img-master/img/2024/01/21/17/15/18/115358703_p0_master1200.jpg",
+    ],
 }
 
+
 async def main():
-    async with starrailcard.Card(character_art = character_art) as card:
+    async with starrailcard.Card(character_art=character_art) as card:
         print(card)
-        
+
+
 asyncio.run(main())

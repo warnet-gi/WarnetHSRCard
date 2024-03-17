@@ -1,11 +1,13 @@
 import asyncio
 import starrailcard
 
+
 async def main():
-        async with starrailcard.Card() as card:
-            data = await card.creat(700649319, style=2)
-            for card in data.card:
-                if card.animation:
-                    card.save_gif(method = "pillow", format= "webp")
-      
+    async with starrailcard.Card() as card:
+        data = await card.creat(700649319, style=2)
+        for card in data.card:
+            if card.animation:
+                card.save_gif(method="pillow", format="webp")
+
+
 asyncio.run(main())
