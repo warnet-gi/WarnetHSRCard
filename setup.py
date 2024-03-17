@@ -13,6 +13,8 @@ setup(
         'beautifulsoup4>=4.12.3',
         'aiohttp>=3.9.3',
         'cachetools>=5.3.1',
+        'numpy>=1.26.4',
+        'pydantic>=2.6.4',
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
