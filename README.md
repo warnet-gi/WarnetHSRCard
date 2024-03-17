@@ -1,26 +1,30 @@
 <p align="center">
- <img src="https://raw.githubusercontent.com/DEViantUA/StarRailCard/main/documentation/StarRailCardM.png" alt="Баннер"/>
+ <img src="./documentation/StarRailCardM.png" alt="Баннер"/>
 </p>
 
 ____
 
 ## StarRailCard
+
 Module for generating Honkai Star Rail character cards
 
 * Ability to generate with or without background.<br>
 * Ability to set a custom image.<br>
 * Flexible map settings.
 
-## Api:
+## Api
+>
 > You can use the API to generate cards if you are using a different programming language.
 [Documentation](https://github.com/DEViantUA/StarRailCard/wiki/StarRailCard-API)
 
-## Installation:
+## Installation
+
 ```
 pip install starrailcard
 ```
 
-## Launch:
+## Launch
+
 ``` python
 from starrailcard import honkaicard 
 import asyncio
@@ -50,8 +54,8 @@ async def mains():
 
 asyncio.run(mains())
 ```
-</details>
 
+</details>
 
 <details>
 <summary>Create a profile card.</summary>
@@ -67,10 +71,11 @@ async def mains():
 
 asyncio.run(mains())
 ```
+
 </details>
 
-
 ## Languages Supported
+
 | Languege    |  Code   | Languege    |  Code   | Languege    |  Code   |
 |-------------|---------|-------------|---------|-------------|---------|
 |  English    |     en  |  русский    |     ru  |  Chinese    |    chs  |
@@ -79,66 +84,60 @@ asyncio.run(mains())
 |  日本語      |     jp  | 中文        |     zh  | español    |     es  |
 |  中文        |     zh  | Indonesian |     id  | français   |     fr  |
 
-
-
 <details>
 <summary>Sample 1 template</summary>
- 
+
 [![Adaptation][3]][3]
- 
-[3]: https://raw.githubusercontent.com/DEViantUA/StarRailCard/main/documentation/a-18.png
+
+[3]: ./documentation/a-18.png
   
 </details>
 
-
 <details>
 <summary>Sample 2 template</summary>
- 
-[![Adaptation][4]][4]
- 
-[4]: https://raw.githubusercontent.com/DEViantUA/StarRailCard/main/documentation/a-27.png
- 
-</details>
 
+[![Adaptation][4]][4]
+
+[4]: ./documentation/a-27.png
+
+</details>
 
 <details>
 <summary>Sample 3 template</summary>
- 
-[![Adaptation][2]][2]
- 
-[2]: https://raw.githubusercontent.com/DEViantUA/StarRailCard/main/documentation/a-21.png
- 
-</details>
 
+[![Adaptation][2]][2]
+
+[2]: ./documentation/a-21.png
+
+</details>
 
 <details>
 <summary>Sample 4 template</summary>
- 
-[![Adaptation][5]][5]
- 
-[5]: https://raw.githubusercontent.com/DEViantUA/StarRailCard/main/documentation/a-25.png
- 
-</details>
 
+[![Adaptation][5]][5]
+
+[5]: ./documentation/a-25.png
+
+</details>
 
 <details>
 <summary>Sample 5 template</summary>
- 
-[![Adaptation][6]][6]
- 
-[6]: https://github.com/DEViantUA/StarRailCard/blob/main/documentation/a-26.png?raw=true
- 
-</details>
 
+[![Adaptation][6]][6]
+
+[6]: ./documentation/a-26.png
+
+</details>
 
 <details>
 <summary>Sample profile template</summary>
- 
+
 [![Adaptation][1]][1]
- 
-[1]: https://raw.githubusercontent.com/DEViantUA/StarRailCard/main/documentation/a-22.png
- 
+
+[1]: ./documentation/a-22.png
+
 </details>
 
-# Thank the author for the code: 
-* **Patreon**: https://www.patreon.com/deviantapi
+# Thank the author for the code
+
+* **Patreon**: <https://www.patreon.com/deviantapi>
