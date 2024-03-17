@@ -53,7 +53,7 @@ async def get_total_rank(value):
 
 
 
-async def get_rating(relict,chart_id, position):
+async def get_rating(relic,chart_id, position):
     global data
     if data is None:
         data = await fetch_data()
@@ -62,12 +62,12 @@ async def get_rating(relict,chart_id, position):
     value_main = 0
     if str(chart_id):
         if str(chart_id) in data:
-            if relict.main_affix.type in data[str(chart_id)]["main"][position]:
-                value_main = data[str(chart_id)]["main"][position][relict.main_affix.type]
+            if relic.main_affix.type in data[str(chart_id)]["main"][position]:
+                value_main = data[str(chart_id)]["main"][position][relic.main_affix.type]
         
             i = 0
             score = 0
-            for key in relict.sub_affix:
+            for key in relic.sub_affix:
                 value = 0
                 if key.type in data[str(chart_id)]["weight"]:
                     if data[str(chart_id)]["weight"][key.type] > 0:
@@ -97,7 +97,7 @@ class Affix(BaseModel):
     count: int = 0
     step: int = 0
 
-class Relict(BaseModel):
+class Relic(BaseModel):
     id: str
     name: str
     set_id: str

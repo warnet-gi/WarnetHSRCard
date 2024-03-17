@@ -10,15 +10,15 @@ _of = openFile.ImageCache()
 
 async def get_rarity_sourse(x):
     if x == 1:
-        return _of.strs_1, _of.relict_1_stars.copy()
+        return _of.strs_1, _of.relic_1_stars.copy()
     elif x == 2:
-        return _of.strs_2, _of.relict_2_stars.copy()
+        return _of.strs_2, _of.relic_2_stars.copy()
     elif x == 3:
-        return _of.strs_3, _of.relict_3_stars.copy()
+        return _of.strs_3, _of.relic_3_stars.copy()
     elif x == 4:
-        return _of.strs_4, _of.relict_4_stars.copy()
+        return _of.strs_4, _of.relic_4_stars.copy()
     elif x == 5:
-        return _of.strs_5, _of.relict_5_stars.copy()
+        return _of.strs_5, _of.relic_5_stars.copy()
 
 
 async def get_quality_color(rank):
@@ -59,7 +59,7 @@ async def creat(relics,character_id, indx, name_charter = None):
     data = {
         "card": None,
         "score": {"score": 0, "rank": 0, "eff": 0, "cv": 0},
-        "relict": {},
+        "relic": {},
         "position": 0
     }
 
@@ -127,7 +127,7 @@ async def creat(relics,character_id, indx, name_charter = None):
     x = int(font.getlength(f"{tcvR} CV"))
     d.text((505-x, 297), f"{tcvR} CV", font=font, fill=(255, 255, 255, 255))
 
-    bg_score = _of.relict_stats.copy()
+    bg_score = _of.relic_stats.copy()
 
     score, rank, eff = await calculators.get_rating(relics,character_id,str(indx))
     color = await get_quality_color(rank)
@@ -144,10 +144,10 @@ async def creat(relics,character_id, indx, name_charter = None):
     
     bg.alpha_composite(bg_score,(305,190))
     
-    data["relict"] = json.loads(relics.json())
+    data["relic"] = json.loads(relics.json())
     data["score"] = {"score": float('{:.2f}'.format(score)), "rank": rank, "eff": eff, "cv": tcvR}
     data["card"] = bg
     data["position"] = int(indx)
 
 
-    return modal.RelictData(**data)
+    return modal.RelicData(**data)

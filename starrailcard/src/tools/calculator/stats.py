@@ -20,7 +20,7 @@ _PATH = Path(__file__).parent /"src"/"assets"
 
 _PATH_FILE_NAME = [
     "max",
-    "relict_id",
+    "relic_id",
     "rolls",
     "score"
 ]
@@ -47,7 +47,7 @@ class Calculator:
         self.data = data
         self.score = open_score("score")
         self.rolls = open_score("rolls")
-        self.relict_id = open_score("relict_id")
+        self.relic_id = open_score("relic_id")
         self.max = open_score("max")
 
         self.result = {
@@ -77,7 +77,7 @@ class Calculator:
     async def get_relic_score(self, chara_id, relic_json):
         result_json = {}
         
-        main_weight = self.score[chara_id]["main"][self.relict_id.get(relic_json.id, relic_json.id)[-1]][relic_json.main_affix.type]
+        main_weight = self.score[chara_id]["main"][self.relic_id.get(relic_json.id, relic_json.id)[-1]][relic_json.main_affix.type]
         main_affix_score = (relic_json.level + 1) / 16 * main_weight
         result_json["main_formula"] = f'{round((relic_json.level + 1) / 16 * 100, 1)}×{main_weight}={main_affix_score * 100}'
         

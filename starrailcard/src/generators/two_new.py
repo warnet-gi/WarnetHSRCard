@@ -278,27 +278,27 @@ class Creat:
                 xp = 290
                 y = 0
              
-    async def creat_relict(self,relict):
+    async def creat_relic(self,relic):
         background_main = Image.new("RGBA",(273,134), (0,0,0,0))
         background = Image.new("RGBA",(273,134), (0,0,0,0))
         background_image = Image.new("RGBA",(273,134), (0,0,0,0))
         
-        background_main.alpha_composite(_of.relict_frame)
+        background_main.alpha_composite(_of.relic_frame)
         
-        image = await pill.get_dowload_img(relict.icon, size=(113, 113))
+        image = await pill.get_dowload_img(relic.icon, size=(113, 113))
         background_image.alpha_composite(image,(-6,21))
-        background.paste(background_image,(0,0),_of.relict_maska.convert("L"))
+        background.paste(background_image,(0,0),_of.relic_maska.convert("L"))
         
-        background_main.alpha_composite(_of.relict_score_frame,(8,0))
+        background_main.alpha_composite(_of.relic_score_frame,(8,0))
         background_main.alpha_composite(background)
-        background_main.alpha_composite(_of.relict_line)
-        score = self.score_info["score"].get(str(relict.id),_DEFAULT_SCORE)
+        background_main.alpha_composite(_of.relic_line)
+        score = self.score_info["score"].get(str(relic.id),_DEFAULT_SCORE)
         
-        main_stat_icon = await pill.get_dowload_img(relict.main_affix.icon, size=(48, 48))
-        color = color_element.get(relict.main_affix.type, None)
+        main_stat_icon = await pill.get_dowload_img(relic.main_affix.icon, size=(48, 48))
+        color = color_element.get(relic.main_affix.type, None)
         if not color is None:
             main_stat_icon = await pill.recolor_image(main_stat_icon, color[:3])
-        stars = await get_stars(relict.rarity)
+        stars = await get_stars(relic.rarity)
         
         background_main.alpha_composite(stars,(51,27))
         background_main.alpha_composite(main_stat_icon,(90,41))
@@ -308,11 +308,11 @@ class Creat:
         font_18 = await pill.get_font(18)
         
         d = ImageDraw.Draw(background_main)
-        x = 135 - int(font_22.getlength(relict.main_affix.display))
-        d.text((x, 86), relict.main_affix.display, font= font_22, fill= (255,255,255,255))
+        x = 135 - int(font_22.getlength(relic.main_affix.display))
+        d.text((x, 86), relic.main_affix.display, font= font_22, fill= (255,255,255,255))
         
-        x = 121 - int(font_22.getlength(f"+{relict.level}")/2)
-        d.text((x, 110), f"+{relict.level}", font= font_14, fill= self.element_color)
+        x = 121 - int(font_22.getlength(f"+{relic.level}")/2)
+        d.text((x, 110), f"+{relic.level}", font= font_14, fill= self.element_color)
         
         y_icon = 21
         y_roll = 30
@@ -320,7 +320,7 @@ class Creat:
                 
         eff = 0
         
-        for k in relict.sub_affix:
+        for k in relic.sub_affix:
             icon = await pill.get_dowload_img(k.icon, size=(29, 29))
             background_main.alpha_composite(icon,(142,y_icon))
             scoreR = score["rolls"].get(k.type,0)
@@ -345,17 +345,17 @@ class Creat:
         
         self.totall_eff += eff
         
-        line_f = _of.relict_frame_line.copy()
+        line_f = _of.relic_frame_line.copy()
         line_f = await pill.recolor_image(line_f, self.element_color[:3])
         background_main.alpha_composite(line_f,(0,21))
         
-        return {"position": str(relict.id)[-1:] , "img": background_main}
+        return {"position": str(relic.id)[-1:] , "img": background_main}
 
     async def creat_score_total(self):
         self.background_score = Image.new("RGBA",(559,43), (0,0,0,0))
         
-        sclor_bg = _of.relict_backgroundl_score_line.copy()
-        sclor_bg_color = _of.relict_full_score_line.copy()
+        sclor_bg = _of.relic_backgroundl_score_line.copy()
+        sclor_bg_color = _of.relic_full_score_line.copy()
         
         sclor_bg_color = await pill.recolor_image(sclor_bg_color, self.element_color[:3])
         
@@ -388,7 +388,7 @@ class Creat:
         d.text((393, -2), "Eff Stat:", font=font_21, fill = (255,255,255,255))
         d.text((497, -2), str(self.totall_eff), font=font_21, fill = color_scoreR.get(self.totall_eff,(255,255,255,255)))        
     
-    async def creat_relict_sets(self):
+    async def creat_relic_sets(self):
         rel_set = {}
         for key in self.character.relic_sets:
             if key.id not in rel_set:
@@ -408,7 +408,7 @@ class Creat:
         for key in rel_set:
             sets = rel_set[key]
             holst_line = Image.new("RGBA", (559,28), (0,0,0,0))
-            background_count = _of.relict_count_sets.copy()
+            background_count = _of.relic_count_sets.copy()
             d = ImageDraw.Draw(background_count)
             d.text((8, 4), str(sets["num"]), font=font, fill=(255, 200, 91, 255))
             d = ImageDraw.Draw(holst_line)
@@ -431,8 +431,8 @@ class Creat:
             else:
                 self.background_sets.alpha_composite(key["line"],(0,0))
     
-    async def build_relict(self):
-        self.background_relict = Image.new("RGBA",(1131,297), (0,0,0,0))
+    async def build_relic(self):
+        self.background_relic = Image.new("RGBA",(1131,297), (0,0,0,0))
         
         position = {
             "1": (0,163),
@@ -445,16 +445,16 @@ class Creat:
         
         map = {"1": None, "2": None, "3": None, "4": None, "5": None, "6": None}
         
-        for key in self.relict:
-            self.background_relict.alpha_composite(key["img"], position.get(key["position"]))
+        for key in self.relic:
+            self.background_relic.alpha_composite(key["img"], position.get(key["position"]))
             map[key["position"]] = 0
         
         for key in map:
             if map[key] is None:
-                self.background_relict.alpha_composite(_of.none_relict, position.get(key))
+                self.background_relic.alpha_composite(_of.none_relic, position.get(key))
 
-        self.background_relict.alpha_composite(self.background_score,(0,112))
-        self.background_relict.alpha_composite(self.background_sets,(0,45))
+        self.background_relic.alpha_composite(self.background_score,(0,112))
+        self.background_relic.alpha_composite(self.background_sets,(0,45))
     
     async def creat_path(self):
         self.background_path = await get_background_path(self.character.path.id)
@@ -524,7 +524,7 @@ class Creat:
         self.background.alpha_composite(self.background_light_cones,(782,16))
         self.background.alpha_composite(self.background_name,(6,654))
         self.background.alpha_composite(self.background_stats,(781,220))
-        self.background.alpha_composite(self.background_relict,(781,473))
+        self.background.alpha_composite(self.background_relic,(781,473))
         self.background.alpha_composite(self.background_skills.resize((320,47)),(1033,134))
         self.background.alpha_composite(self.background_path.resize((488,428)),(1409,16))
         self.background.alpha_composite(self.seelelen, (1120,35))
@@ -558,7 +558,7 @@ class Creat:
                              self.creat_light_cone(),
                              self.creat_name(),
                              self.creat_stats(),
-                             self.creat_relict_sets(),
+                             self.creat_relic_sets(),
                              self.creat_constant(),
                              self.creat_path(),
                              self.get_score(),
@@ -567,11 +567,11 @@ class Creat:
         
         self.score_info = await stats.Calculator(self.character).start()
         
-        relic_tasks = [self.creat_relict(key) for key in self.character.relics]
-        self.relict = await asyncio.gather(*relic_tasks)
+        relic_tasks = [self.creat_relic(key) for key in self.character.relics]
+        self.relic = await asyncio.gather(*relic_tasks)
         
         await self.creat_score_total()
-        await self.build_relict()
+        await self.build_relic()
         await self.build()
         
         data = {

@@ -215,14 +215,14 @@ mapping = {
     'stats_frame_enc': assets/'teample_enkcard'/'stats'/'frame.png',
 
 
-    'relict_total_bg': assets/'relict'/'total_bg.png',
-    'relict_stats': assets/'relict'/'stats.png',
+    'relic_total_bg': assets/'relic'/'total_bg.png',
+    'relic_stats': assets/'relic'/'stats.png',
 
-    'relict_1_stars': assets/'relict'/'1_stars.png',
-    'relict_2_stars': assets/'relict'/'2_stars.png',
-    'relict_3_stars': assets/'relict'/'3_stars.png',
-    'relict_4_stars': assets/'relict'/'4_stars.png',
-    'relict_5_stars': assets/'relict'/'5_stars.png',
+    'relic_1_stars': assets/'relic'/'1_stars.png',
+    'relic_2_stars': assets/'relic'/'2_stars.png',
+    'relic_3_stars': assets/'relic'/'3_stars.png',
+    'relic_4_stars': assets/'relic'/'4_stars.png',
+    'relic_5_stars': assets/'relic'/'5_stars.png',
 
     
     #TEAMPLE FIVE
@@ -263,12 +263,12 @@ mapping = {
     'bg_dop_skills': assets/'teample_teams'/'skills'/'bg_dop.png',
     'bg_dop_closed': assets/'teample_teams'/'skills'/'closed.png',
     
-    'stars_1_frame_relict': assets/'teample_teams'/'relic'/'1_stars.png',
-    'stars_2_frame_relict': assets/'teample_teams'/'relic'/'2_stars.png',
-    'stars_3_frame_relict': assets/'teample_teams'/'relic'/'3_stars.png',
-    'stars_4_frame_relict': assets/'teample_teams'/'relic'/'4_stars.png',
-    'stars_5_frame_relict': assets/'teample_teams'/'relic'/'5_stars.png',
-    'shadow_frame_relict': assets/'teample_teams'/'relic'/'shadow.png',
+    'stars_1_frame_relic': assets/'teample_teams'/'relic'/'1_stars.png',
+    'stars_2_frame_relic': assets/'teample_teams'/'relic'/'2_stars.png',
+    'stars_3_frame_relic': assets/'teample_teams'/'relic'/'3_stars.png',
+    'stars_4_frame_relic': assets/'teample_teams'/'relic'/'4_stars.png',
+    'stars_5_frame_relic': assets/'teample_teams'/'relic'/'5_stars.png',
+    'shadow_frame_relic': assets/'teample_teams'/'relic'/'shadow.png',
     
     
     'wind_five': assets/'teample_teams'/'background'/'wind.png',
@@ -296,15 +296,15 @@ mapping = {
     'light_cone_ups': assets/'teample_two_new'/'light_cone'/'ups.png',
     
     
-    'relict_backgroundl_score_line': assets/'teample_two_new'/'relict'/'backgroundl_score_line.png',
-    'relict_full_score_line': assets/'teample_two_new'/'relict'/'full_score_line.png',
-    'relict_count_sets': assets/'teample_two_new'/'relict'/'count_sets.png',
-    'relict_frame_line': assets/'teample_two_new'/'relict'/'frame_line.png',    
-    'relict_line': assets/'teample_two_new'/'relict'/'line.png',
-    'relict_frame': assets/'teample_two_new'/'relict'/'relict_frame.png',
-    'relict_maska': assets/'teample_two_new'/'relict'/'relict_maska.png',
-    'relict_score_frame': assets/'teample_two_new'/'relict'/'score_frame.png',
-    'none_relict': assets/'teample_two_new'/'relict'/'none_relict.png',
+    'relic_backgroundl_score_line': assets/'teample_two_new'/'relic'/'backgroundl_score_line.png',
+    'relic_full_score_line': assets/'teample_two_new'/'relic'/'full_score_line.png',
+    'relic_count_sets': assets/'teample_two_new'/'relic'/'count_sets.png',
+    'relic_frame_line': assets/'teample_two_new'/'relic'/'frame_line.png',    
+    'relic_line': assets/'teample_two_new'/'relic'/'line.png',
+    'relic_frame': assets/'teample_two_new'/'relic'/'relic_frame.png',
+    'relic_maska': assets/'teample_two_new'/'relic'/'relic_maska.png',
+    'relic_score_frame': assets/'teample_two_new'/'relic'/'score_frame.png',
+    'none_relic': assets/'teample_two_new'/'relic'/'none_relic.png',
     
     'g_five': assets/'teample_two_new'/'stars'/'g_five.png',
     'g_four': assets/'teample_two_new'/'stars'/'g_four.png',

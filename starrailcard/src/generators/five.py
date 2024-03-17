@@ -117,17 +117,17 @@ async def max_lvl(x):
     
     return max
 
-async def get_frame_relict(x):
+async def get_frame_relic(x):
     if x == 5:
-        return _of.stars_5_frame_relict.copy()
+        return _of.stars_5_frame_relic.copy()
     elif x == 4:
-        return _of.stars_4_frame_relict.copy()
+        return _of.stars_4_frame_relic.copy()
     elif x == 3:
-        return _of.stars_3_frame_relict.copy()
+        return _of.stars_3_frame_relic.copy()
     elif x == 2:
-        return _of.stars_2_frame_relict.copy()
+        return _of.stars_2_frame_relic.copy()
     else:
-        return _of.stars_1_frame_relict.copy()
+        return _of.stars_1_frame_relic.copy()
 
 class Creat:
 
@@ -146,11 +146,11 @@ class Creat:
         return bg
     
     async def creat_relics(self,relics):
-        bg = await get_frame_relict(relics.rarity)
+        bg = await get_frame_relic(relics.rarity)
 
         icon_rel = await pill.get_dowload_img(relics.icon, size=(51, 51))
         bg.alpha_composite(icon_rel,(0,0))
-        bg.alpha_composite(_of.shadow_frame_relict,(0,0))
+        bg.alpha_composite(_of.shadow_frame_relic,(0,0))
         icon = await pill.get_dowload_img(relics.main_affix.icon, size=(18,18))
         bg.alpha_composite(icon,(30,3))
         

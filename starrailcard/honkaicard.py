@@ -2,7 +2,7 @@
 # All rights reserved.
 
 from .src.tools import translation, pill, modal, openFile
-from .src.generators import one, two, tree,four,five, author, profile, relicts,two_new
+from .src.generators import one, two, tree,four,five, author, profile, relics,two_new
 from honkairail import starrailapi
 import asyncio,re,os,datetime
 
@@ -204,7 +204,7 @@ class MiHoMoCard():
 
         return modal.HSRCard(**user)
 
-    async def get_relict(self,uid,charter_id, position = None):
+    async def get_relic(self,uid,charter_id, position = None):
         """
         :param position: int, Relic position from 1 to 6.
         :param charter_id: int, The character ID of the relic to get.
@@ -219,7 +219,7 @@ class MiHoMoCard():
             "uid": uid,
             "card": None,
             "charter_id": charter_id,
-            "relict": [],
+            "relic": [],
         }
 
         data = await self.API.get_full_data(uid)
@@ -228,13 +228,13 @@ class MiHoMoCard():
                 if not position is None:
                     for z in character.relics:
                         if z.id[-1:] == str(position):
-                            result["relict"] = [await relicts.creat(z,character.id,position,name_charter= character.name)]
+                            result["relic"] = [await relics.creat(z,character.id,position,name_charter= character.name)]
                 else:
-                    relic_tasks = [relicts.creat(key,character.id,key.id[-1:], name_charter= character.name) for key in character.relics]
-                    result["relict"] = await asyncio.gather(*relic_tasks)
+                    relic_tasks = [relics.creat(key,character.id,key.id[-1:], name_charter= character.name) for key in character.relics]
+                    result["relic"] = await asyncio.gather(*relic_tasks)
 
         if not position is None:
-            result["card"] = result["relict"][0].card
+            result["card"] = result["relic"][0].card
         else:
             positione = [
                 (40,40),(593,40),
@@ -242,14 +242,14 @@ class MiHoMoCard():
                 (1146,40),(1146,401),
             ]
 
-            card_bg = openFile.ImageCache().relict_total_bg.convert("RGBA")
+            card_bg = openFile.ImageCache().relic_total_bg.convert("RGBA")
 
-            for key in result["relict"]:
+            for key in result["relic"]:
                 card_bg.alpha_composite(key.card, positione[key.position-1])
             
             result["card"] = card_bg
 
-        return modal.StarRailRelict(**result)
+        return modal.StarRailRelic(**result)
 
 
     async def add_author(self, card, link = "", name = "", profile = False):
@@ -295,19 +295,19 @@ class MiHoMoCard():
             
 
 class StarRaillScore:
-    def __init__(self, chart_id, relict) -> None:
+    def __init__(self, chart_id, relic) -> None:
         """
         :param chart_id: int, Character id
-        :param relict: class, the object you get from the method: get_relict()
+        :param relic: class, the object you get from the method: get_relic()
         """
         
-        if relict == []:
+        if relic == []:
             raise TypeError("Doesn't accept lists. Only 1 relic")
         
-        if not relict.position:
-            raise TypeError("Pass an object of the RelictData class, you can get it using the method: get_relict()")
+        if not relic.position:
+            raise TypeError("Pass an object of the RelicData class, you can get it using the method: get_relic()")
         
-        self.relict = relict
+        self.relic = relic
         self.chart_id = chart_id
 
     async def __aenter__(self):
@@ -317,4 +317,4 @@ class StarRaillScore:
         pass
 
     async def calculate(self):
-        return await relicts.creat(self.relict.relict,self.chart_id,self.relict.position)
+        return await relics.creat(self.relic.relic,self.chart_id,self.relic.position)

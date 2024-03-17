@@ -74,7 +74,7 @@ class SubAffix(BaseModel):
     display: Optional[Union[str, int]]
     percent: Optional[bool]
 
-class Relict(BaseModel):
+class Relic(BaseModel):
     id: Optional[str]
     name: Optional[str]
     set_id: Optional[str]
@@ -91,20 +91,20 @@ class Score(BaseModel):
     eff: Optional[int]
     cv: Optional[float]
 
-class RelictData(BaseModel):
+class RelicData(BaseModel):
     card: Image.Image
     score: Optional[Score]
-    relict: Optional[Relict]
+    relic: Optional[Relic]
     position: Optional[int]
     class Config:
         arbitrary_types_allowed = True
 
 
-class StarRailRelict(BaseModel):
+class StarRailRelic(BaseModel):
     uid: Optional[int]
     card: Image.Image 
     charter_id: Optional[int]
-    relict: Optional[List[RelictData]]
+    relic: Optional[List[RelicData]]
 
     class Config:
         arbitrary_types_allowed = True
