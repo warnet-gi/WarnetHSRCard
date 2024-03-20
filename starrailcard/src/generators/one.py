@@ -5,6 +5,24 @@ from PIL import ImageDraw, Image
 from ..tools import pill, openFile, treePaths
 
 _of = openFile.ImageCache()
+BG_TYPE = {
+    'fire': _of.bg_fire.convert("RGBA"),
+    'ice': _of.bg_ice.convert("RGBA"),
+    'imaginary': _of.bg_imaginary.convert("RGBA"),
+    'lightning': _of.bg_lightning.convert("RGBA"),
+    'physical': _of.bg_physical.convert("RGBA"),
+    'quantum': _of.bg_quantum.convert("RGBA"),
+    'wind': _of.bg_wind.convert("RGBA"),
+}
+BG_CHAR_TYPE = {
+    'fire': _of.bg_char_fire,
+    'ice': _of.bg_char_ice,
+    'imaginary': _of.bg_char_imaginary,
+    'lightning': _of.bg_char_lightning,
+    'physical': _of.bg_char_physical,
+    'quantum': _of.bg_char_quantum,
+    'wind': _of.bg_char_wind,
+}
 
 
 async def get_stars_icon(x):
@@ -41,14 +59,15 @@ async def max_lvl(x):
 
 class Create:
 
-    def __init__(self, characters, lang, img, hide, uid, name, background) -> None:
-        self.character = characters
+    def __init__(self, character, lang, img, hide, uid, name, background) -> None:
+        self.character = character
         self.lang = lang
         self.img = img
         self.hide = hide
         self.uid = uid
         self.name = name
         self.background = background
+        self.element = self.character.element.name.lower()
 
     async def create_constant(self):
         background_skills = Image.new("RGBA", (74, 363), (0, 0, 0, 0))
@@ -83,24 +102,24 @@ class Create:
         background.alpha_composite(bg.resize((52, 52)), (9, position))
 
     async def create_charters(self):
+        bg_target = BG_CHAR_TYPE[self.element].copy()
         if self.img:
-            bg_new = _of.bg_charters.copy()
-            bg = bg_new.copy()
+            bg = bg_target.copy()
             user_image = await pill.get_resize_image(self.img, 478, 374)
             if user_image["type"] == 2:
-                bg_new.alpha_composite(user_image["img"], (0, 0))
+                bg_target.alpha_composite(user_image["img"], (0, 0))
             else:
-                bg_new.alpha_composite(
+                bg_target.alpha_composite(
                     user_image["img"], (int(187 - user_image["img"].size[0] / 2), 0)
                 )
 
-            bg.paste(bg_new, (0, 0), _of.maska_charters.convert("L"))
+            bg.paste(bg_target, (0, 0), _of.mask_charters.convert("L"))
+
         else:
-            bg_new = _of.bg_charters.copy()
-            image = await pill.get_dowload_img(self.character.preview)
-            bg_new.alpha_composite(image, (-17, 9))
-            bg = _of.bg_charters.copy()
-            bg.paste(bg_new, (0, 0), _of.maska_charters.convert("L"))
+            character_image = await pill.get_dowload_img(self.character.preview)
+            bg = bg_target.copy()
+            bg_target.alpha_composite(character_image, (-17, 9))
+            bg.paste(bg_target, (0, 0), _of.mask_charters.convert("L"))
 
         frame = _of.frame_charters.copy()
 
@@ -436,7 +455,7 @@ class Create:
 
     async def start(self):
         if self.background:
-            bg = _of.total_bg.copy().convert("RGBA")
+            bg = BG_TYPE[self.element].copy()
         else:
             bg = Image.new("RGBA", (1015, 696), (0, 0, 0, 0))
 
