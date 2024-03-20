@@ -39,7 +39,7 @@ async def max_lvl(x):
     return max
 
 
-class Creat:
+class Create:
 
     def __init__(self, characters, lang, img, hide, uid, name, background) -> None:
         self.character = characters
@@ -50,7 +50,7 @@ class Creat:
         self.name = name
         self.background = background
 
-    async def creat_constant(self):
+    async def create_constant(self):
         background_skills = Image.new("RGBA", (74, 363), (0, 0, 0, 0))
         y = 11
         rank = self.character.rank
@@ -82,7 +82,7 @@ class Creat:
         bg.alpha_composite(loock, (0, 0))
         background.alpha_composite(bg.resize((52, 52)), (9, position))
 
-    async def creat_charters(self):
+    async def create_charters(self):
         if self.img:
             bg_new = _of.bg_charters.copy()
             bg = bg_new.copy()
@@ -134,13 +134,13 @@ class Creat:
         x = int(font.getlength(prom) / 2)
         d.text((36 - x, 39), prom, font=font, fill=(255, 207, 131, 255))
 
-        background_skills = await self.creat_constant()
+        background_skills = await self.create_constant()
         frame.alpha_composite(background_skills, (0, 77))
         frame.alpha_composite(bg, (45, 21))
 
         return frame
 
-    async def creat_light_cone(self):
+    async def create_light_cone(self):
         bg_new = _of.bg_lc.copy()
         if self.character.light_cone is None:
             return Image.new("RGBA", (0, 0), (0, 0, 0, 0))
@@ -196,7 +196,7 @@ class Creat:
 
         frame.alpha_composite(bg, (0, 0))
 
-    async def creat_stats(self):
+    async def create_stats(self):
         bg_new = _of.STATS.copy()
 
         combined_attributes = {}
@@ -235,7 +235,7 @@ class Creat:
 
         return bg_new
 
-    async def creat_info_user(self):
+    async def create_info_user(self):
         bg = _of.uid.copy()
         font, font_uid = await asyncio.gather(pill.get_font(30), pill.get_font(18))
 
@@ -391,7 +391,7 @@ class Creat:
         image.alpha_composite(frame, position)
         return image
 
-    async def creat_relics(self, relics):
+    async def create_relics(self, relics):
         bg = _of.ARTIFACT.copy()
 
         icon_rel = await pill.get_dowload_img(relics.icon, size=(59, 53))
@@ -441,10 +441,10 @@ class Creat:
             bg = Image.new("RGBA", (1015, 696), (0, 0, 0, 0))
 
         tasks = [
-            self.creat_charters(),
-            self.creat_light_cone(),
-            self.creat_stats(),
-            self.creat_info_user(),
+            self.create_charters(),
+            self.create_light_cone(),
+            self.create_stats(),
+            self.create_info_user(),
             self.main_skills(),
             self.create_sets(),
             self.dop_stats(),
@@ -466,7 +466,7 @@ class Creat:
         for image, position in operations:
             bg.alpha_composite(image, position)
 
-        relic_tasks = [self.creat_relics(key) for key in self.character.relics]
+        relic_tasks = [self.create_relics(key) for key in self.character.relics]
         relics = await asyncio.gather(*relic_tasks)
 
         if relics == []:

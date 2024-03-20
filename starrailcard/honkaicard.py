@@ -174,7 +174,7 @@ class MiHoMoCard:
                 await self.get_characterBackgroundImg(key.name.lower(), str(key.id))
             if self.template == 1:
                 task.append(
-                    one.Creat(
+                    one.Create(
                         key,
                         self.translateLang,
                         self.img,
