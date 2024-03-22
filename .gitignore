@@ -131,3 +131,5 @@ dmypy.json
 *.crt
 .vscode
 poetry.lock
+
+StarRailRes/
