@@ -37,6 +37,21 @@ headers = {
 cache = TTLCache(maxsize=1000, ttl=300)
 
 
+async def get_local_asset(link: str, size=None, thumbnail_size=None):
+    path = link.replace(
+        'https://raw.githubusercontent.com/Mar-7th/StarRailRes/master/',
+        'starrailcard/src/assets/StarRailRes/',
+    )
+    image = Image.open(path).convert("RGBA")
+
+    if size:
+        image = image.resize(size)
+    elif thumbnail_size:
+        image.thumbnail(thumbnail_size)
+
+    return image
+
+
 async def get_dowload_img(link, size=None, thumbnail_size=None):
     cache_key = json.dumps((link, size, thumbnail_size), sort_keys=True)  # Преобразовываем в строку
 
