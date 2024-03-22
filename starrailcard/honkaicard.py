@@ -2,7 +2,7 @@
 # All rights reserved.
 
 from .src.tools import translation, pill, modal, openFile
-from .src.generators import one, two, tree, four, five, author, profile, relics, two_new
+from .src.generators import one, two, three, four, five, author, profile, relics
 from honkairail import starrailapi
 import asyncio, re, os, datetime
 
@@ -186,7 +186,7 @@ class MiHoMoCard:
                 )
             elif self.template == 3:
                 task.append(
-                    tree.Creat(
+                    three.Creat(
                         key,
                         self.translateLang,
                         self.img,
@@ -207,7 +207,7 @@ class MiHoMoCard:
                 task.append(five.Creat(key, self.translateLang, self.img).start())
             else:
                 task.append(
-                    two_new.Creat(
+                    two.Creat(
                         key, self.translateLang, self.img, self.hide, int(uid), self.seeleland
                     ).start()
                 )
